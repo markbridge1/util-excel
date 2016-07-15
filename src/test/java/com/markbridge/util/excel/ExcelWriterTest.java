@@ -56,7 +56,7 @@ public class ExcelWriterTest {
         }
         
         try {
-            ExcelWriter writer = new ExcelWriter(new File(".\\testing\\excelwritertest.xlsx"));
+            ExcelWriter writer = new ExcelWriter(new File(".\\src\\test\\resources\\excel\\excelreadertest.xlsx"));
             writer.open();
             writer.writeRows("testsheet", headerList, memRows);
             writer.writeRows("testsheet2", headerList, memRows);
