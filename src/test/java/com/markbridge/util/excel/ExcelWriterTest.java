@@ -46,7 +46,7 @@ public class ExcelWriterTest {
         System.out.println(f.getAbsoluteFile().getPath());
         
         String[] headerList = {"col1", "second", "3rd", "4", "fifth", "sixth", "7th", "8", "col9","tenth"};
-        ArrayList<List<String>> memRows = new ArrayList<>();
+        ArrayList<ArrayList<String>> memRows = new ArrayList<>();
         for(int rowNum = 0; rowNum < 50; rowNum++) {
             ArrayList<String> row = new ArrayList<String>();
             memRows.add(row);

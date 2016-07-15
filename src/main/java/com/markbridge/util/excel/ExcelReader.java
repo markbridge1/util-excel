@@ -47,15 +47,19 @@ public class ExcelReader {
         return this;
     }
     
-    public XSSFSheet setSheet(String sheetname) {
+    public ExcelReader setSheet(String sheetname) {
         sheet = workbook.getSheet(sheetname);
         setRowList();
         setKeyMap();
+        return this;
+    }
+    
+    public XSSFSheet getSheet() {
         return sheet;
     }
     
-    public List<List<String>> getRows() {
-        ArrayList<List<String>> retVal = new ArrayList<List<String>>();
+    public ArrayList<ArrayList<String>> getRows() {
+        ArrayList<ArrayList<String>> retVal = new ArrayList<ArrayList<String>>();
         
         for(XSSFRow row : rowList) {
             ArrayList<String> cellList = new ArrayList<>();

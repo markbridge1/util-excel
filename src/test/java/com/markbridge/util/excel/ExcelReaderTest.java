@@ -6,6 +6,7 @@
 package com.markbridge.util.excel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.After;
@@ -50,7 +51,7 @@ public class ExcelReaderTest {
             reader.setSheet("testsheet");
             Map<String, Integer> keyMap = reader.getKeyMap();
             
-            List<List<String>> rowList = reader.getRows();
+            ArrayList<ArrayList<String>> rowList = reader.getRows();
             
             for(List<String> row : rowList) {
                 for(String cell : row) {

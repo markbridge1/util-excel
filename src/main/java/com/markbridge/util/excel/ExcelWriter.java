@@ -55,8 +55,8 @@ public class ExcelWriter {
      * @param headersList
      * @param memRowList 
      */
-    public void writeRows(String sheetName, 
-            String[] headersList, ArrayList<List<String>> memRowList) throws IOException {
+    public ExcelWriter writeRows(String sheetName, 
+            String[] headersList, ArrayList<ArrayList<String>> memRowList) throws IOException {
         
         int sheetOrder = 0; //default to first unless already have a sheet
         
@@ -106,6 +106,8 @@ public class ExcelWriter {
         workbook.write(fos);
         fos.flush();
         fos.close();
+        
+        return this;
     }
     
     public void close() throws IOException {
