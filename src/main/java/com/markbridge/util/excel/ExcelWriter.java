@@ -105,7 +105,6 @@ public class ExcelWriter {
         Row headerRow = sheet.createRow(0);
         for(int i = 0; i < headersList.length; i++) {
             Cell cell = headerRow.createCell(i);
-            cell.setCellType(Cell.CELL_TYPE_STRING);
             cell.setCellValue(headersList[i]);
         }
         
@@ -116,7 +115,6 @@ public class ExcelWriter {
             Row row = sheet.createRow(memRowNum + 1);
             for(int i = 0; i < memRow.size(); i++) {
                 Cell cell = row.createCell(i);
-                cell.setCellType(Cell.CELL_TYPE_STRING);
                 cell.setCellValue(memRow.get(i));
             }
         }
