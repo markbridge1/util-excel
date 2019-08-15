@@ -69,7 +69,7 @@ public class ExcelReaderTest {
         try {
             ExcelReader reader = new ExcelReader(new File(".\\src\\test\\resources\\excel\\excelreadertest.xlsx"));
             reader.open();
-            reader.setSheet("testsheet");
+            reader.setSheet("testsheet", true);
             Map<String, Integer> keyMap = reader.getKeyMap();
             
             ArrayList<ArrayList<String>> rowList = reader.getRows();

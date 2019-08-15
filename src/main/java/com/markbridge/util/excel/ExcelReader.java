@@ -67,10 +67,19 @@ public class ExcelReader {
         return this;
     }
     
-    public ExcelReader setSheet(String sheetname) {
+    /**
+     * Map keys will assume first row is unique column headers and get a key map
+     * so can index by column header
+     * @param sheetname
+     * @param mapKeys
+     * @return 
+     */
+    public ExcelReader setSheet(String sheetname, Boolean mapKeys) {
         sheet = workbook.getSheet(sheetname);
         setRowList();
-        setKeyMap();
+        if(mapKeys.equals(Boolean.TRUE)) {
+            setKeyMap();
+        }
         return this;
     }
     
