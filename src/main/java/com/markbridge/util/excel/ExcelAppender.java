@@ -43,18 +43,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  * @author Mark Bridge <j2eewebtier@gmail.com>
  */
-public class ExcelWriter {
+public class ExcelAppender {
     
     File file;
     OPCPackage destination;
     Workbook workbook;
     boolean existing = false;
     
-    public ExcelWriter(File file) {
+    public ExcelAppender(File file) {
         this.file = file;
     }
     
-    public ExcelWriter open() throws InvalidFormatException, IOException {
+    public ExcelAppender open() throws InvalidFormatException, IOException {
         if(file.exists()) {
             existing = Boolean.TRUE;
             FileInputStream fos = new FileInputStream(file);
@@ -75,44 +75,21 @@ public class ExcelWriter {
      * @param headersList
      * @param memRowList 
      */
-    public ExcelWriter writeRows(String sheetName, 
-            String[] headersList, List<List<String>> memRowList) throws IOException {
+    public ExcelAppender appendRows(String sheetName, List<List<String>> memRowList) throws IOException {
         
         int sheetOrder = 0; //default to first unless already have a sheet
         
-        //clear any existing rows
         Sheet sheet = workbook.getSheet(sheetName);
-        if(sheet != null) {
-            int numSheets = workbook.getNumberOfSheets();
-            for(int i = 0; i < numSheets; i++) {
-                if(workbook.getSheetAt(i).getSheetName().equalsIgnoreCase(sheetName)) {
-                    sheetOrder = i;
-                    sheet = workbook.getSheetAt(i);
-                    for(int rowNum = sheet.getFirstRowNum(); rowNum <= sheet.getLastRowNum(); rowNum++ ) {
-                        sheet.removeRow(sheet.getRow(rowNum));
-                    }
-                    workbook.removeSheetAt(i);
-                    break;
-                }
-            }
-        }
-        
-        sheet = workbook.createSheet(sheetName);
         workbook.setSheetOrder(sheetName, sheetOrder);
         workbook.setActiveSheet(sheetOrder);
         
-        //add header row
-        Row headerRow = sheet.createRow(0);
-        for(int i = 0; i < headersList.length; i++) {
-            Cell cell = headerRow.createCell(i);
-            cell.setCellValue(headersList[i]);
-        }
+        int lastRowNum = sheet.getLastRowNum();
         
         //add rows in memory - nb, start at row 1 of xssfsheet so plus one on memrownum index 
         //when adding the row to the sheet
         for(int memRowNum = 0; memRowNum < memRowList.size(); memRowNum++) {
             List<String> memRow = memRowList.get(memRowNum);
-            Row row = sheet.createRow(memRowNum + 1);
+            Row row = sheet.createRow(memRowNum + lastRowNum + 1);
             for(int i = 0; i < memRow.size(); i++) {
                 Cell cell = row.createCell(i);
                 cell.setCellValue(memRow.get(i));

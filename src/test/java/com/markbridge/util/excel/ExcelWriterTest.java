@@ -27,12 +27,12 @@ package com.markbridge.util.excel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -66,7 +66,7 @@ public class ExcelWriterTest {
         System.out.println(f.getAbsoluteFile().getPath());
         
         String[] headerList = {"col1", "second", "3rd", "4", "fifth", "sixth", "7th", "8", "col9","tenth"};
-        ArrayList<ArrayList<String>> memRows = new ArrayList<>();
+        List<List<String>> memRows = new ArrayList<>();
         for(int rowNum = 0; rowNum < 50; rowNum++) {
             ArrayList<String> row = new ArrayList<String>();
             memRows.add(row);
