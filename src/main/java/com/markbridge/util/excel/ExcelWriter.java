@@ -25,11 +25,11 @@
  */
 package com.markbridge.util.excel;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -120,10 +120,10 @@ public class ExcelWriter {
         }
         
         //http://stackoverflow.com/questions/14117617/apache-poi-unable-to-write-to-an-existing-workbook
-        FileOutputStream fos = new FileOutputStream(file);
-        workbook.write(fos);
-        fos.flush();
-        fos.close();
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+        workbook.write(bos);
+        bos.flush();
+        bos.close();
         
         return this;
     }
@@ -132,4 +132,7 @@ public class ExcelWriter {
         workbook.close();
     }
     
+    public Workbook getWorkbook() {
+        return workbook;
+    }
 }

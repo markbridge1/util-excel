@@ -25,11 +25,11 @@
  */
 package com.markbridge.util.excel;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
@@ -68,6 +68,54 @@ public class ExcelAppender {
     }
     
     /**
+     * Clear any existing sheet with given name, create a new one with the given 
+     * header at the given position (zero-based) and make it the active sheet
+     * 
+     * @param sheetName
+     * @param sheetPosition 0-based
+     * @param header
+     * @return 
+     */
+    public ExcelAppender refreshSheet(String sheetName, 
+            Integer sheetPosition, String[] headerArray) throws IOException {
+        
+        //clear any existing rows on sheet
+        Sheet sheet = workbook.getSheet(sheetName);
+        if(sheet != null) {
+            
+            int numSheets = workbook.getNumberOfSheets();
+            for(int i = 0; i < numSheets; i++) {
+                if(workbook.getSheetAt(i).getSheetName().equalsIgnoreCase(sheetName)) {
+                    sheet = workbook.getSheetAt(i);
+                    for(int rowNum = sheet.getFirstRowNum(); rowNum <= sheet.getLastRowNum(); rowNum++ ) {
+                        sheet.removeRow(sheet.getRow(rowNum));
+                    }
+                    workbook.removeSheetAt(i);
+                    break;
+                }
+            }
+        }
+        
+        sheet = workbook.createSheet(sheetName);
+        workbook.setSheetOrder(sheetName, sheetPosition);
+        workbook.setActiveSheet(sheetPosition);
+        
+        Row row = sheet.createRow(0);
+        for(int i = 0; i < headerArray.length; i++) {
+            Cell cell = row.createCell(i);
+            cell.setCellValue(headerArray[i]);
+        }
+        
+        //http://stackoverflow.com/questions/14117617/apache-poi-unable-to-write-to-an-existing-workbook
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+        workbook.write(bos);
+        bos.flush();
+        bos.close();
+        
+        return this;
+    }
+    
+    /**
      * https://poi.apache.org/spreadsheet/quick-guide.html
      * 
      * Assumes have a header row and at least one row of data, will write and close everything out
@@ -77,11 +125,7 @@ public class ExcelAppender {
      */
     public ExcelAppender appendRows(String sheetName, List<List<String>> memRowList) throws IOException {
         
-        int sheetOrder = 0; //default to first unless already have a sheet
-        
         Sheet sheet = workbook.getSheet(sheetName);
-        workbook.setSheetOrder(sheetName, sheetOrder);
-        workbook.setActiveSheet(sheetOrder);
         
         int lastRowNum = sheet.getLastRowNum();
         
@@ -97,16 +141,20 @@ public class ExcelAppender {
         }
         
         //http://stackoverflow.com/questions/14117617/apache-poi-unable-to-write-to-an-existing-workbook
-        FileOutputStream fos = new FileOutputStream(file);
-        workbook.write(fos);
-        fos.flush();
-        fos.close();
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+        workbook.write(bos);
+        bos.flush();
+        bos.close();
         
         return this;
     }
     
     public void close() throws IOException {
         workbook.close();
+    }
+    
+    public Workbook getWorkbook() {
+        return workbook;
     }
     
 }
