@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.ss.usermodel.Cell;
@@ -98,6 +99,52 @@ public class ExcelAppender {
         
         sheet = workbook.createSheet(sheetName);
         workbook.setSheetOrder(sheetName, sheetPosition);
+        workbook.setActiveSheet(sheetPosition);
+        
+        Row row = sheet.createRow(0);
+        for(int i = 0; i < headerArray.length; i++) {
+            Cell cell = row.createCell(i);
+            cell.setCellValue(headerArray[i]);
+        }
+        
+        //http://stackoverflow.com/questions/14117617/apache-poi-unable-to-write-to-an-existing-workbook
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+        workbook.write(bos);
+        bos.flush();
+        bos.close();
+        
+        return this;
+    }
+    
+    /**
+     * Clear any existing sheet with given name, create a new one with the given 
+     * header at the given position (zero-based) and make it the active sheet
+     * 
+     * @param sheetName
+     * @param sheetPosition 0-based
+     * @param header
+     * @return 
+     */
+    public ExcelAppender replaceSheet(Pattern sheetNamePattern, String newSheetName,
+            Integer sheetPosition, String[] headerArray) throws IOException {
+        
+        //clear any existing rows on sheet and remove it
+        Sheet sheet = null;
+        int numSheets = workbook.getNumberOfSheets();
+        for(int i = 0; i < numSheets; i++) {
+            String sn = workbook.getSheetAt(i).getSheetName();
+            if(sheetNamePattern.matcher(sn).matches()) {
+                sheet = workbook.getSheetAt(i);
+                for(int rowNum = sheet.getFirstRowNum(); rowNum <= sheet.getLastRowNum(); rowNum++ ) {
+                    sheet.removeRow(sheet.getRow(rowNum));
+                }
+                workbook.removeSheetAt(i);
+                break;
+            }
+        }
+        
+        sheet = workbook.createSheet(newSheetName);
+        workbook.setSheetOrder(newSheetName, sheetPosition);
         workbook.setActiveSheet(sheetPosition);
         
         Row row = sheet.createRow(0);
