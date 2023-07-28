@@ -91,6 +91,9 @@ public class ExcelReader {
         ArrayList<ArrayList<String>> retVal = new ArrayList<ArrayList<String>>();
         
         for(XSSFRow row : rowList) {
+            if(row == null) { //empty/cut phantom row
+                continue;
+            }
             ArrayList<String> cellList = new ArrayList<>();
             retVal.add(cellList);
             for(int cellNum = row.getFirstCellNum(); cellNum <= row.getLastCellNum(); cellNum++) {
